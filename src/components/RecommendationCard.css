@@ -1,0 +1,253 @@
+.recommendation-card-container {
+  position: relative;
+  animation: slideInUp 0.3s ease-out;
+}
+
+.recommendation-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e8e8e8;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.recommendation-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.close-button {
+  color: #999;
+  font-size: 16px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  color: #666;
+  background-color: #f5f5f5;
+}
+
+.card-header {
+  margin-bottom: 12px;
+}
+
+.location-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.location-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.location-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.location-name {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+  line-height: 1.4;
+}
+
+.location-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.distance {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #666;
+}
+
+.distance .anticon {
+  font-size: 12px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  color: #faad14;
+  font-weight: 500;
+}
+
+.rating .anticon {
+  font-size: 12px;
+}
+
+.card-content {
+  margin-bottom: 16px;
+}
+
+.reason-text {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #1890ff;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.description-text {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.realtime-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.queue-badge,
+.seats-badge {
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 12px;
+  padding: 2px 8px;
+}
+
+.offer-tag {
+  font-size: 11px;
+  border-radius: 12px;
+  margin: 0;
+}
+
+.location-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action-button {
+  border-radius: 20px;
+  font-weight: 500;
+  height: 32px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.action-button .anticon {
+  font-size: 12px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .recommendation-card {
+    margin: 0 16px;
+  }
+  
+  .location-name {
+    font-size: 15px;
+  }
+  
+  .reason-text {
+    font-size: 13px;
+  }
+  
+  .description-text {
+    font-size: 12px;
+  }
+  
+  .action-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* 动画效果 */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .recommendation-card {
+    background-color: #262626;
+    border-color: #434343;
+  }
+  
+  .location-name {
+    color: #ffffff;
+  }
+  
+  .description-text {
+    color: #a6a6a6;
+  }
+  
+  .distance {
+    color: #a6a6a6;
+  }
+  
+  .close-button {
+    color: #a6a6a6;
+  }
+  
+  .close-button:hover {
+    color: #ffffff;
+    background-color: #434343;
+  }
+}
+
+/* 特殊状态样式 */
+.recommendation-card.urgent {
+  border-color: #ff4d4f;
+  box-shadow: 0 4px 16px rgba(255, 77, 79, 0.2);
+}
+
+.recommendation-card.popular {
+  border-color: #fa8c16;
+  box-shadow: 0 4px 16px rgba(250, 140, 22, 0.2);
+}
+
+/* 浮动定位样式（用于Toast通知） */
+.recommendation-card-container.floating {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  max-width: 320px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .recommendation-card-container.floating {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
+  }
+} 

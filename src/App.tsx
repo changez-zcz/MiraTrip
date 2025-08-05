@@ -4,6 +4,7 @@ import { notification, Modal, ConfigProvider } from 'antd';
 import './App.css';
 import HomePage from './pages/HomePage';
 import ResultPage from './pages/ResultPage';
+import PlannerPage from './pages/PlannerPage';
 import { generateTripPlan, getWeatherInfo } from './services/api';
 import { DeepseekResponse, TripFormData, TripPlan } from './types';
 import LoadingPage from './components/LoadingPage';
@@ -203,6 +204,10 @@ function AppContent() {
                 }} 
               />
             ) : <Navigate to="/" />} 
+          />
+          <Route 
+            path="/planner" 
+            element={<PlannerPage />} 
           />
         </Routes>
       )}

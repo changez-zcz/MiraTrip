@@ -1,7 +1,30 @@
 import axios from 'axios';
 import { ENV } from '../env';
-import { TripFormData, DeepseekResponse, WeatherInfo, DayPlan, Meal } from '../types';
-import { mockWeatherInfo, mockTripPlan } from '../utils/mockData';
+import { 
+  TripFormData, 
+  TripPlan, 
+  DeepseekResponse, 
+  WeatherInfo,
+  Location,
+  RouteRequest,
+  GeneratedRoute,
+  Recommendation,
+  UserLocation,
+  DiaryCreateRequest,
+  DiaryGenerationResponse,
+  Diary,
+  UserProfile,
+  ApiResponse
+} from '../types';
+import { 
+  mockWeatherInfo, 
+  mockTripPlan, 
+  mockLocations, 
+  mockGeneratedRoutes, 
+  mockRecommendations, 
+  mockUserProfile,
+  mockDiaries
+} from '../utils/mockData';
 
 // 城市坐标映射表（主要城市）
 const CITY_COORDINATES: { [key: string]: { longitude: number; latitude: number } } = {
@@ -124,7 +147,7 @@ function standardizeTripPlanFormat(responseData: any, formData: TripFormData): a
     if (travelPlan.days && Array.isArray(travelPlan.days)) {
       standardized.tripPlan.days = travelPlan.days.map((day: any, index: number) => {
         // 创建标准格式的单日行程
-        const standardDay: DayPlan = {
+        const standardDay: TripPlan['days'][0] = {
           date: day.date || new Date(new Date(formData.startDate).getTime() + index * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
           dayIndex: index,
           description: `第${index + 1}天行程安排`,
@@ -191,7 +214,7 @@ function standardizeTripPlanFormat(responseData: any, formData: TripFormData): a
         
         // 确保每天至少有3餐
         const mealTypes = ['breakfast', 'lunch', 'dinner'];
-        const existingTypes = standardDay.meals.map((meal: Meal) => meal.type);
+        const existingTypes = standardDay.meals.map((meal: TripPlan['days'][0]['meals'][0]) => meal.type);
         
         mealTypes.forEach(type => {
           if (!existingTypes.includes(type as any)) {
@@ -404,7 +427,7 @@ async function createMultiDayTrip(parsedData: any, formData: TripFormData): Prom
   log(`API返回的行程天数: ${originalDaysCount}, 请求的天数: ${formData.travelDays}`);
   
   // 确保每天的索引正确
-  parsedData.tripPlan.days.forEach((day: DayPlan, index: number) => {
+  parsedData.tripPlan.days.forEach((day: TripPlan['days'][0], index: number) => {
     day.dayIndex = index;
     
     // 确保日期正确
@@ -423,7 +446,7 @@ async function createMultiDayTrip(parsedData: any, formData: TripFormData): Prom
       
       // 检查已有的餐食类型
       const existingTypes: ('breakfast' | 'lunch' | 'dinner')[] = day.meals
-        .map((meal: Meal) => meal.type)
+        .map((meal: TripPlan['days'][0]['meals'][0]) => meal.type)
         .filter((type): type is 'breakfast' | 'lunch' | 'dinner' => ['breakfast', 'lunch', 'dinner'].includes(type));
       
       // 添加缺失的餐食
@@ -446,18 +469,18 @@ async function createMultiDayTrip(parsedData: any, formData: TripFormData): Prom
             type: mealType,
             name: `第${index+1}天 ${mealName}`,
             description: `第${index+1}天 ${mealDesc}`
-          } as Meal);
+          } as TripPlan['days'][0]['meals'][0]);
         }
       }
     }
   )
   
   // 排序确保按日期顺序
-  parsedData.tripPlan.days.sort((a: DayPlan, b: DayPlan) => a.dayIndex - b.dayIndex);
+  parsedData.tripPlan.days.sort((a: TripPlan['days'][0], b: TripPlan['days'][0]) => a.dayIndex - b.dayIndex);
   
   // 获取所有景点的真实位置信息
   log('开始获取所有景点的真实位置信息');
-  const allAttractions = parsedData.tripPlan.days.flatMap((day: DayPlan) => 
+  const allAttractions = parsedData.tripPlan.days.flatMap((day: TripPlan['days'][0]) => 
     day.attractions.map(attr => ({
       name: attr.name,
       city: formData.city
@@ -471,7 +494,7 @@ async function createMultiDayTrip(parsedData: any, formData: TripFormData): Prom
       
       // 更新每个景点的位置信息
       let poiIndex = 0;
-      parsedData.tripPlan.days.forEach((day: DayPlan) => {
+      parsedData.tripPlan.days.forEach((day: TripPlan['days'][0]) => {
         day.attractions.forEach((attr) => {
           if (poiIndex < poiInfoList.length) {
             const poiInfo = poiInfoList[poiIndex];
@@ -1295,4 +1318,275 @@ export async function generateTripPlan(formData: TripFormData): Promise<Deepseek
     
     throw err;
   }
+}
+
+// ========== 妙游应用新增API功能 ==========
+
+// 获取园区所有地点
+export async function getLocations(): Promise<ApiResponse<Location[]>> {
+  try {
+    // 模拟API延迟
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    return {
+      success: true,
+      data: mockLocations
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: '获取地点信息失败'
+    };
+  }
+}
+
+// 生成智能路线
+export async function generateRoute(request: RouteRequest): Promise<ApiResponse<GeneratedRoute>> {
+  try {
+    // 模拟API延迟
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // 根据目的地和偏好生成路线
+    const destination = mockLocations.find(loc => 
+      loc.name.includes(request.destination) || 
+      request.destination.includes(loc.name)
+    );
+    
+    if (!destination) {
+      return {
+        success: false,
+        error: '未找到指定的目的地'
+      };
+    }
+    
+    // 根据偏好筛选地点
+    const filteredLocations = mockLocations.filter(loc => {
+      if (request.preferences.length === 0) return true;
+      return request.preferences.some(pref => loc.tags.includes(pref));
+    });
+    
+    // 生成路线节点
+    const nodes = filteredLocations.slice(0, 4).map((location, index) => {
+      const startHour = 9 + Math.floor(index * 1.5);
+      const time = `${startHour.toString().padStart(2, '0')}:${index === 0 ? '00' : '30'}`;
+      
+      return {
+        time,
+        location,
+        activity: getActivitySuggestion(location, request.preferences),
+        alert: getAlertInfo(location, index),
+        coordinates: location.coordinates,
+        estimatedDuration: location.visitDuration || 60
+      };
+    });
+    
+    const route: GeneratedRoute = {
+      id: `route-${Date.now()}`,
+      title: `${request.destination}智能路线`,
+      description: `根据您的偏好生成的个性化路线`,
+      nodes,
+      totalDuration: nodes.reduce((sum, node) => sum + node.estimatedDuration, 0),
+      totalDistance: Math.floor(Math.random() * 1000) + 500,
+      createdAt: new Date().toISOString(),
+      isSaved: false
+    };
+    
+    return {
+      success: true,
+      data: route
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: '生成路线失败'
+    };
+  }
+}
+
+// 获取智能推荐
+export async function getRecommendations(userLocation: UserLocation): Promise<ApiResponse<Recommendation[]>> {
+  try {
+    // 模拟API延迟
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // 根据用户位置计算距离并生成推荐
+    const recommendations = mockRecommendations.map(rec => ({
+      ...rec,
+      distance: Math.floor(Math.random() * 500) + 100 // 模拟距离计算
+    }));
+    
+    return {
+      success: true,
+      data: recommendations
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: '获取推荐失败'
+    };
+  }
+}
+
+// 保存路线
+export async function saveRoute(routeId: string): Promise<ApiResponse<boolean>> {
+  try {
+    // 模拟API延迟
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    return {
+      success: true,
+      data: true
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: '保存路线失败'
+    };
+  }
+}
+
+// 生成旅行日记
+export async function generateDiary(request: DiaryCreateRequest): Promise<DiaryGenerationResponse> {
+  try {
+    // 模拟API延迟
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    // 模拟AI生成日记内容
+    const diary: Diary = {
+      id: `diary-${Date.now()}`,
+      title: request.title || '我的妙游日记',
+      content: generateMockDiaryContent(request.images.length),
+      images: request.images.map((file, index) => ({
+        id: `img-${index}`,
+        url: URL.createObjectURL(file),
+        originalName: file.name,
+        uploadTime: new Date().toISOString(),
+        description: `第${index + 1}张照片的AI生成描述`
+      })),
+      routeId: request.routeId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      isPublished: false
+    };
+    
+    return {
+      success: true,
+      diary
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: '生成日记失败'
+    };
+  }
+}
+
+// 获取用户个人中心数据
+export async function getUserProfile(): Promise<ApiResponse<UserProfile>> {
+  try {
+    // 模拟API延迟
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    return {
+      success: true,
+      data: mockUserProfile
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: '获取用户信息失败'
+    };
+  }
+}
+
+// 获取用户保存的路线
+export async function getSavedRoutes(): Promise<ApiResponse<GeneratedRoute[]>> {
+  try {
+    // 模拟API延迟
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    return {
+      success: true,
+      data: mockGeneratedRoutes
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: '获取保存的路线失败'
+    };
+  }
+}
+
+// 获取用户日记列表
+export async function getDiaries(): Promise<ApiResponse<Diary[]>> {
+  try {
+    // 模拟API延迟
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    return {
+      success: true,
+      data: mockDiaries
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: '获取日记列表失败'
+    };
+  }
+}
+
+// 辅助函数：生成活动建议
+function getActivitySuggestion(location: Location, preferences: string[]): string {
+  const suggestions = {
+    '主展厅': '参观最新科技展示，体验互动装置',
+    '丰年培训室': '参加技术培训或讲座',
+    '百度咖啡厅': '休息放松，享用咖啡和甜点',
+    'K2创新空间': '体验创新项目，参与互动展示',
+    'AI体验馆': '体验AI技术，参与智能互动',
+    '员工餐厅': '享用多样化餐饮选择',
+    '会议室': '进行商务洽谈或团队会议',
+    '休闲花园': '放松身心，拍照留念'
+  };
+  
+  return suggestions[location.name as keyof typeof suggestions] || '参观体验';
+}
+
+// 辅助函数：生成提醒信息
+function getAlertInfo(location: Location, index: number): any {
+  if (location.crowdLevel === 'high') {
+    return {
+      type: 'warning',
+      message: '当前人流较多，建议错峰体验'
+    };
+  }
+  
+  if (index === 0) {
+    return {
+      type: 'info',
+      message: '避开上下班人流量高峰'
+    };
+  }
+  
+  return undefined;
+}
+
+// 辅助函数：生成模拟日记内容
+function generateMockDiaryContent(imageCount: number): string {
+  return `# 我的妙游日记
+
+## 今日行程
+
+今天在百度科技园度过了愉快的一天，参观了多个精彩的地点。
+
+### 主要体验
+
+${Array.from({ length: imageCount }, (_, i) => `#### 第${i + 1}站
+这是第${i + 1}张照片记录的美好时刻，体验了前沿的科技展示和互动装置。`).join('\n\n')}
+
+## 总结
+
+今天的参观让我对百度在AI领域的技术实力有了更深入的了解，是一次非常有意义的科技之旅！
+
+*生成时间：${new Date().toLocaleString('zh-CN')}*
+`;
 }
