@@ -578,7 +578,7 @@ export async function searchPOIByKeyword(keyword: string, city: string) {
       status: '1',
       count: '5',
       info: 'OK',
-      pois: mockTripPlan.days.flatMap(day => day.attractions).map(attr => ({
+      pois: mockTripPlan.days.flatMap((day: any) => day.attractions).map((attr: any) => ({
         id: Math.random().toString(36).substring(2, 10),
         name: attr.name,
         type: attr.category,
@@ -1050,7 +1050,7 @@ export async function generateTripPlan(formData: TripFormData): Promise<Deepseek
       city: formData.city,
       startDate: formData.startDate,
       endDate: formData.endDate,
-      days: mockTripPlan.days.slice(0, formData.travelDays).map((day, index) => ({
+      days: mockTripPlan.days.slice(0, formData.travelDays).map((day: any, index: number) => ({
         ...day,
         date: new Date(new Date(formData.startDate).getTime() + index * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         dayIndex: index,
@@ -1230,7 +1230,7 @@ export async function generateTripPlan(formData: TripFormData): Promise<Deepseek
               city: formData.city,
               startDate: formData.startDate,
               endDate: formData.endDate,
-              days: mockTripPlan.days.slice(0, formData.travelDays).map((day, index) => ({
+              days: mockTripPlan.days.slice(0, formData.travelDays).map((day: any, index: number) => ({
                 ...day,
                 date: new Date(new Date(formData.startDate).getTime() + index * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
                 dayIndex: index,
@@ -1260,7 +1260,7 @@ export async function generateTripPlan(formData: TripFormData): Promise<Deepseek
           city: formData.city,
           startDate: formData.startDate,
           endDate: formData.endDate,
-          days: mockTripPlan.days.slice(0, formData.travelDays).map((day, index) => ({
+          days: mockTripPlan.days.slice(0, formData.travelDays).map((day: any, index: number) => ({
             ...day,
             date: new Date(new Date(formData.startDate).getTime() + index * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
             dayIndex: index,
@@ -1305,7 +1305,7 @@ export async function generateTripPlan(formData: TripFormData): Promise<Deepseek
           city: formData.city,
           startDate: formData.startDate,
           endDate: formData.endDate,
-          days: mockTripPlan.days.slice(0, formData.travelDays).map((day, index) => ({
+          days: mockTripPlan.days.slice(0, formData.travelDays).map((day: any, index: number) => ({
             ...day,
             date: new Date(new Date(formData.startDate).getTime() + index * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
             dayIndex: index,
@@ -1404,7 +1404,7 @@ export async function generateRoute(request: RouteRequest): Promise<ApiResponse<
 }
 
 // 获取智能推荐
-export async function getRecommendations(userLocation: UserLocation): Promise<ApiResponse<Recommendation[]>> {
+export async function getRecommendations(_userLocation: UserLocation): Promise<ApiResponse<Recommendation[]>> {
   try {
     // 模拟API延迟
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -1536,7 +1536,7 @@ export async function getDiaries(): Promise<ApiResponse<Diary[]>> {
 }
 
 // 辅助函数：生成活动建议
-function getActivitySuggestion(location: Location, preferences: string[]): string {
+function getActivitySuggestion(location: Location, _preferences: string[]): string {
   const suggestions = {
     '主展厅': '参观最新科技展示，体验互动装置',
     '丰年培训室': '参加技术培训或讲座',

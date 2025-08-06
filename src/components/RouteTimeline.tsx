@@ -94,7 +94,7 @@ const RouteTimeline: React.FC<RouteTimelineProps> = ({
                   
                   <div className="location-tags">
                     {node.location.tags.slice(0, 3).map((tag, tagIndex) => (
-                      <Tag key={tagIndex} color="blue" size="small">
+                      <Tag key={tagIndex} color="blue">
                         {tag}
                       </Tag>
                     ))}

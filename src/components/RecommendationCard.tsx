@@ -163,7 +163,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
 
           <div className="location-tags">
             {location.tags.slice(0, 2).map((tag, index) => (
-              <Tag key={index} color="blue" size="small">
+              <Tag key={index} color="blue">
                 {tag}
               </Tag>
             ))}
@@ -186,4 +186,5 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
   );
 };
 
-export default RecommendationCard; 
+export default RecommendationCard;
+

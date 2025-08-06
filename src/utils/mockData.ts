@@ -1,5 +1,36 @@
 import { Location, GeneratedRoute, Recommendation, Diary, User } from '../types';
 
+// 模拟天气信息数据
+export const mockWeatherInfo = [
+  {
+    date: '2024-01-15',
+    dayWeather: '晴',
+    nightWeather: '多云',
+    dayTemp: 8,
+    nightTemp: -2,
+    winddirection: '北风',
+    windpower: '3级'
+  },
+  {
+    date: '2024-01-16',
+    dayWeather: '多云',
+    nightWeather: '晴',
+    dayTemp: 6,
+    nightTemp: -4,
+    winddirection: '西北风',
+    windpower: '4级'
+  },
+  {
+    date: '2024-01-17',
+    dayWeather: '晴',
+    nightWeather: '晴',
+    dayTemp: 10,
+    nightTemp: 0,
+    winddirection: '南风',
+    windpower: '2级'
+  }
+];
+
 // 园区地点数据
 export const mockLocations: Location[] = [
   {
@@ -290,4 +321,199 @@ export const mockUserProfile = {
     totalDiaries: 2,
     totalVisits: 5
   }
+};
+
+// 模拟旅行计划数据
+export const mockTripPlan = {
+  city: '北京',
+  startDate: '2024-01-15',
+  endDate: '2024-01-17',
+  days: [
+    {
+      date: '2024-01-15',
+      dayIndex: 0,
+      description: '第1天行程安排',
+      transportation: '地铁',
+      accommodation: '酒店',
+      attractions: [
+        {
+          name: '故宫博物院',
+          address: '北京市东城区景山前街4号',
+          location: {
+            longitude: 116.3974,
+            latitude: 39.9163
+          },
+          visitDuration: 180,
+          description: '中国明清两代的皇家宫殿，世界上现存规模最大、保存最完整的木质结构古建筑群',
+          imageUrl: '/images/forbidden-city.jpg',
+          rating: 4.8,
+          category: '历史古迹'
+        },
+        {
+          name: '天安门广场',
+          address: '北京市东城区天安门广场',
+          location: {
+            longitude: 116.3974,
+            latitude: 39.9033
+          },
+          visitDuration: 60,
+          description: '世界上最大的城市广场，是北京的地标性建筑',
+          imageUrl: '/images/tiananmen.jpg',
+          rating: 4.6,
+          category: '地标建筑'
+        }
+      ],
+      meals: [
+        {
+          type: 'breakfast' as const,
+          name: '酒店早餐',
+          description: '在酒店享用丰盛的早餐'
+        },
+        {
+          type: 'lunch' as const,
+          name: '全聚德烤鸭',
+          description: '品尝正宗的北京烤鸭'
+        },
+        {
+          type: 'dinner' as const,
+          name: '老北京炸酱面',
+          description: '体验地道的北京小吃'
+        }
+      ]
+    },
+    {
+      date: '2024-01-16',
+      dayIndex: 1,
+      description: '第2天行程安排',
+      transportation: '地铁',
+      accommodation: '酒店',
+      attractions: [
+        {
+          name: '颐和园',
+          address: '北京市海淀区新建宫门路19号',
+          location: {
+            longitude: 116.2755,
+            latitude: 39.9999
+          },
+          visitDuration: 240,
+          description: '中国现存最大、保存最完整的皇家园林，被誉为"皇家园林博物馆"',
+          imageUrl: '/images/summer-palace.jpg',
+          rating: 4.7,
+          category: '园林景观'
+        },
+        {
+          name: '圆明园遗址公园',
+          address: '北京市海淀区清华西路28号',
+          location: {
+            longitude: 116.2988,
+            latitude: 40.0089
+          },
+          visitDuration: 120,
+          description: '清代皇家园林，现为遗址公园，具有重要的历史文化价值',
+          imageUrl: '/images/yuanmingyuan.jpg',
+          rating: 4.5,
+          category: '历史遗址'
+        }
+      ],
+      meals: [
+        {
+          type: 'breakfast' as const,
+          name: '酒店早餐',
+          description: '在酒店享用丰盛的早餐'
+        },
+        {
+          type: 'lunch' as const,
+          name: '颐和园附近餐厅',
+          description: '在颐和园附近享用午餐'
+        },
+        {
+          type: 'dinner' as const,
+          name: '北京涮羊肉',
+          description: '品尝正宗的北京涮羊肉'
+        }
+      ]
+    },
+    {
+      date: '2024-01-17',
+      dayIndex: 2,
+      description: '第3天行程安排',
+      transportation: '地铁',
+      accommodation: '酒店',
+      attractions: [
+        {
+          name: '八达岭长城',
+          address: '北京市延庆区八达岭特区',
+          location: {
+            longitude: 116.0241,
+            latitude: 40.3563
+          },
+          visitDuration: 180,
+          description: '明长城中保存最好的一段，也是最具代表性的一段，是万里长城的精华',
+          imageUrl: '/images/great-wall.jpg',
+          rating: 4.9,
+          category: '历史古迹'
+        },
+        {
+          name: '鸟巢',
+          address: '北京市朝阳区国家体育场路1号',
+          location: {
+            longitude: 116.3974,
+            latitude: 39.9928
+          },
+          visitDuration: 90,
+          description: '2008年北京奥运会主体育场，现为重要的体育和文化活动场所',
+          imageUrl: '/images/bird-nest.jpg',
+          rating: 4.4,
+          category: '现代建筑'
+        }
+      ],
+      meals: [
+        {
+          type: 'breakfast' as const,
+          name: '酒店早餐',
+          description: '在酒店享用丰盛的早餐'
+        },
+        {
+          type: 'lunch' as const,
+          name: '长城脚下农家乐',
+          description: '在长城脚下品尝农家菜'
+        },
+        {
+          type: 'dinner' as const,
+          name: '北京烤鸭',
+          description: '再次品尝美味的北京烤鸭'
+        }
+      ]
+    }
+  ],
+  weatherInfo: [
+    {
+      date: '2024-01-15',
+      dayWeather: '晴',
+      nightWeather: '多云',
+      dayTemp: 8,
+      nightTemp: -2,
+      winddirection: '北风',
+      windpower: '3级'
+    },
+    {
+      date: '2024-01-16',
+      dayWeather: '多云',
+      nightWeather: '晴',
+      dayTemp: 6,
+      nightTemp: -4,
+      winddirection: '西北风',
+      windpower: '4级'
+    },
+    {
+      date: '2024-01-17',
+      dayWeather: '晴',
+      nightWeather: '晴',
+      dayTemp: 10,
+      nightTemp: 0,
+      winddirection: '南风',
+      windpower: '2级'
+    }
+  ],
+  overallSuggestions: '北京三日游行程安排合理，涵盖了历史文化、园林景观和现代建筑等不同类型的景点。建议提前预订门票，注意天气变化，合理安排游览时间。'
 }; 
